@@ -1,0 +1,59 @@
+@model List<Course>
+    @{
+    ViewData["Title"] = "Manage courses";
+    }
+
+    @if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Manage courses</h1>
+        <a class="btn btn-primary" asp-action="Create">New course</a>
+    </div>
+
+    @if (!Model.Any())
+{
+    <p class="text-muted">You have no courses yet.</p>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Lessons</th>
+                <th>Students</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+            <tr>
+                <td>@c.Title</td>
+                <td>@c.Category</td>
+                <td>@c.Lessons.Count</td>
+                <td>@c.Enrollments.Count</td>
+                <td>
+                    @if (c.IsPublished)
+                        {
+                    <span class="badge bg-success">Published</span>
+                        }
+                        else
+                        {
+                    <span class="badge bg-warning text-dark">Draft</span>
+                        }
+                </td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@c.Id">Open</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@c.Id">Edit</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,53 @@
+@model List<Course>
+@{
+    ViewData["Title"] = "Courses";
+    var categories = ViewBag.Categories as List<string> ?? new List<string>();
+    var selectedCategory = ViewBag.Category as string;
+}
+
+<h1 class="mb-4">Courses</h1>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search courses" />
+    </div>
+    <div class="col-md-4">
+        <select name="category" class="form-select">
+            <option value="">All categories</option>
+            @foreach (var c in categories)
+            {
+                <option value="@c" selected="@(c == selectedCategory)">@c</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-primary w-100">Search</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No courses found.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var c in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <span class="badge bg-secondary mb-2">@c.Category</span>
+                        <h5 class="card-title">@c.Title</h5>
+                        <p class="card-text">@(c.Description.Length > 100 ? c.Description.Substring(0, 100) + "..." : c.Description)</p>
+                        <p class="text-muted small mb-0">@c.Level | @c.Lessons.Count lessons</p>
+                        <p class="text-muted small">By @c.Instructor?.FullName</p>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@c.Id">View course</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

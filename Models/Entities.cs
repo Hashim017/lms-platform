@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace LMS.Models;
@@ -138,4 +139,42 @@ public class Submission
     public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
     public int? Score { get; set; }
     public string? Feedback { get; set; }
+}
+
+public class CourseFormViewModel
+{
+    public int Id { get; set; }
+
+    [Required, StringLength(120)]
+    public string Title { get; set; } = string.Empty;
+
+    [Required, StringLength(2000)]
+    public string Description { get; set; } = string.Empty;
+
+    [Required, StringLength(60)]
+    public string Category { get; set; } = string.Empty;
+
+    [Required]
+    public string Level { get; set; } = "Beginner";
+
+    [Display(Name = "Published")]
+    public bool IsPublished { get; set; }
+}
+
+public class LessonFormViewModel
+{
+    public int Id { get; set; }
+    public int CourseId { get; set; }
+
+    [Required, StringLength(120)]
+    public string Title { get; set; } = string.Empty;
+
+    [Required]
+    public string Content { get; set; } = string.Empty;
+
+    [Url, Display(Name = "Video URL")]
+    public string? VideoUrl { get; set; }
+
+    [Range(1, 1000)]
+    public int Order { get; set; } = 1;
 }
