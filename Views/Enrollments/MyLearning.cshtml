@@ -1,0 +1,58 @@
+@model List<MyCourseItem>
+    @{
+    ViewData["Title"] = "My learning";
+    var totalDone = Model.Sum(m => m.DoneLessons);
+    var completed = Model.Count(m => m.IsCompleted);
+    }
+
+    <div class="page-head reveal">
+        <h1>Hi <span class="grad-text">@ViewBag.Name</span></h1>
+        <p class="text-muted">Here is where you left off.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4 reveal"><div class="glass stat"><i class="bi bi-journal-bookmark"></i><div class="num" data-count="@Model.Count">0</div><div class="text-muted small">Courses enrolled</div></div></div>
+        <div class="col-md-4 reveal" style="--d:.08s"><div class="glass stat"><i class="bi bi-check2-circle"></i><div class="num" data-count="@totalDone">0</div><div class="text-muted small">Lessons completed</div></div></div>
+        <div class="col-md-4 reveal" style="--d:.16s"><div class="glass stat"><i class="bi bi-trophy"></i><div class="num" data-count="@completed">0</div><div class="text-muted small">Courses finished</div></div></div>
+    </div>
+
+    @if (!Model.Any())
+{
+    <div class="glass empty reveal">
+        <i class="bi bi-rocket-takeoff"></i>
+        <h5 class="mt-3">You have not enrolled yet</h5>
+        <p class="text-muted">Pick a course and start your first lesson.</p>
+        <a class="btn btn-primary" asp-controller="Courses" asp-action="Index">Browse courses</a>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var (m, i) in Model.Select((m, i) => (m, i)))
+        {
+        <div class="col-lg-6 reveal" style="--d:@((i % 4) * 70)ms">
+            <div class="glass learn-card">
+                <div style="--size:92px"><partial name="_Ring" model="m.Percent" /></div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="cat-tag">@m.Course.Category</span>
+                        @if (m.IsCompleted)
+                            {
+                        <span class="done-badge"><i class="bi bi-trophy-fill"></i> Completed</span>
+                            }
+                    </div>
+                    <h5 class="mb-1">@m.Course.Title</h5>
+                    <p class="text-muted small mb-3">@m.DoneLessons of @m.TotalLessons lessons done</p>
+                    <div class="d-flex gap-2">
+                        @if (m.ResumeLessonId != null)
+                            {
+                        <a class="btn btn-primary btn-sm" asp-controller="Learn" asp-action="Lesson" asp-route-id="@m.ResumeLessonId">@(m.IsCompleted ? "Review" : m.DoneLessons == 0 ? "Start" : "Continue")</a>
+                            }
+                        <a class="btn btn-ghost btn-sm" asp-controller="Courses" asp-action="Details" asp-route-id="@m.Course.Id">Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+}

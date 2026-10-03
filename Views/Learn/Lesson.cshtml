@@ -1,0 +1,120 @@
+@model LessonPageViewModel
+@{
+    ViewData["Title"] = Model.Lesson.Title;
+    var isDone = Model.DoneIds.Contains(Model.Lesson.Id);
+    var position = Model.Lessons.FindIndex(l => l.Id == Model.Lesson.Id) + 1;
+
+    string? embed = null;
+    var url = Model.Lesson.VideoUrl;
+    if (!string.IsNullOrWhiteSpace(url))
+    {
+        if (url.Contains("watch?v="))
+            embed = "https://www.youtube.com/embed/" + url.Split("watch?v=")[1].Split('&')[0];
+        else if (url.Contains("youtu.be/"))
+            embed = "https://www.youtube.com/embed/" + url.Split("youtu.be/")[1].Split('?')[0];
+    }
+}
+
+<div class="row g-4">
+    <aside class="col-lg-4 order-lg-2">
+        <div class="glass lesson-side">
+            <a class="small" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id"><i class="bi bi-arrow-left"></i> @Model.Course.Title</a>
+            <div class="d-flex align-items-center gap-3 my-3">
+                <div style="--size:72px"><partial name="_Ring" model="Model.Percent" /></div>
+                <div>
+                    <div class="fw-bold">Your progress</div>
+                    <div class="text-muted small">@Model.DoneIds.Count of @Model.Lessons.Count lessons</div>
+                </div>
+            </div>
+            @foreach (var l in Model.Lessons)
+            {
+                var d = Model.DoneIds.Contains(l.Id);
+            <div class="lesson-row @(d ? "done" : "") @(l.Id == Model.Lesson.Id ? "current" : "")" style="padding:.55rem .8rem">
+                <span class="lesson-num">
+                    @if (d)
+                        {
+                    <i class="bi bi-check-lg"></i>
+                        }
+                        else
+                        {
+                    @l.Order
+                        }
+                </span>
+                <a class="lesson-link small" asp-action="Lesson" asp-route-id="@l.Id">@l.Title</a>
+            </div>
+            }
+        </div>
+    </aside>
+
+    <section class="col-lg-8 order-lg-1">
+        <div class="glass p-4 p-md-5">
+            <span class="pill"><i class="bi bi-collection-play"></i> Lesson @position of @Model.Lessons.Count</span>
+            <h1 class="h2 mt-3">@Model.Lesson.Title</h1>
+
+            @if (embed != null)
+            {
+            <div class="video-frame ratio ratio-16x9">
+                <iframe src="@embed" title="@Model.Lesson.Title" allowfullscreen></iframe>
+            </div>
+            }
+            else if (!string.IsNullOrWhiteSpace(url))
+            {
+            <a class="btn btn-ghost mt-3" href="@url" target="_blank" rel="noopener"><i class="bi bi-play-circle"></i> Watch the video</a>
+            }
+
+            <div class="lesson-content">@Model.Lesson.Content</div>
+            <hr />
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                @if (Model.Prev != null)
+                {
+                <a id="prevLink" class="btn btn-ghost" asp-action="Lesson" asp-route-id="@Model.Prev.Id"><i class="bi bi-arrow-left"></i> Previous</a>
+                }
+                else
+                {
+                <span></span>
+                }
+
+                @if (Model.IsEnrolled)
+                {
+                <form asp-action="Toggle" asp-route-id="@Model.Lesson.Id" method="post">
+                    @if (isDone)
+                        {
+                    <button class="btn btn-ghost"><i class="bi bi-arrow-counterclockwise"></i> Completed - undo</button>
+                        }
+                        else
+                        {
+                    <button class="btn btn-primary"><i class="bi bi-check2-circle"></i> Mark as complete</button>
+                        }
+                </form>
+                }
+                else
+                {
+                <span class="badge bg-secondary">Preview mode</span>
+                }
+
+                @if (Model.Next != null)
+                {
+                <a id="nextLink" class="btn btn-ghost" asp-action="Lesson" asp-route-id="@Model.Next.Id">Next <i class="bi bi-arrow-right"></i></a>
+                }
+                else
+                {
+                <span></span>
+                }
+            </div>
+            <p class="text-muted small text-center mt-3 mb-0">Tip: use the left and right arrow keys to move between lessons.</p>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('keydown', function (e) {
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+            var prev = document.getElementById('prevLink');
+            var next = document.getElementById('nextLink');
+            if (e.key === 'ArrowLeft' && prev) location.href = prev.href;
+            if (e.key === 'ArrowRight' && next) location.href = next.href;
+        });
+    </script>
+}

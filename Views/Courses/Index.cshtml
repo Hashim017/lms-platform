@@ -1,53 +1,83 @@
 @model List<Course>
-@{
+    @{
     ViewData["Title"] = "Courses";
     var categories = ViewBag.Categories as List<string> ?? new List<string>();
-    var selectedCategory = ViewBag.Category as string;
-}
+    }
 
-<h1 class="mb-4">Courses</h1>
-
-<form method="get" class="row g-2 mb-4">
-    <div class="col-md-5">
-        <input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search courses" />
+    <div class="page-head reveal">
+        <h1>Explore <span class="grad-text">courses</span></h1>
+        <p class="text-muted">Find something new to learn today.</p>
     </div>
-    <div class="col-md-4">
-        <select name="category" class="form-select">
-            <option value="">All categories</option>
-            @foreach (var c in categories)
-            {
-                <option value="@c" selected="@(c == selectedCategory)">@c</option>
-            }
+
+    <div class="glass filter-bar reveal">
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input id="q" class="form-control" placeholder="Search by title or topic" autocomplete="off" />
+        </div>
+        <select id="level" class="form-select">
+            <option value="">All levels</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
         </select>
     </div>
-    <div class="col-md-3">
-        <button class="btn btn-primary w-100">Search</button>
-    </div>
-</form>
 
-@if (!Model.Any())
-{
-    <p class="text-muted">No courses found.</p>
-}
-else
-{
-    <div class="row">
-        @foreach (var c in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <span class="badge bg-secondary mb-2">@c.Category</span>
-                        <h5 class="card-title">@c.Title</h5>
-                        <p class="card-text">@(c.Description.Length > 100 ? c.Description.Substring(0, 100) + "..." : c.Description)</p>
-                        <p class="text-muted small mb-0">@c.Level | @c.Lessons.Count lessons</p>
-                        <p class="text-muted small">By @c.Instructor?.FullName</p>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@c.Id">View course</a>
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="chips reveal">
+        <button type="button" class="chip active" data-cat="">All</button>
+        @foreach (var c in categories)
+    {
+        <button type="button" class="chip" data-cat="@c">@c</button>
+    }
     </div>
-}
+
+    <p class="text-muted small" id="count"></p>
+
+    <div class="row g-4" id="grid">
+        @foreach (var (c, i) in Model.Select((c, i) => (c, i)))
+    {
+        var key = (c.Title + " " + c.Description + " " + c.Category).ToLower();
+        <div class="col-md-6 col-lg-4 course-item reveal" style="--d:@((i % 6) * 60)ms" data-title="@key" data-cat="@c.Category" data-level="@c.Level">
+            <partial name="_CourseCard" model="c" />
+        </div>
+    }
+    </div>
+
+    <div id="empty" class="empty glass d-none mt-3">
+        <i class="bi bi-emoji-frown"></i>
+        <h5 class="mt-3">No courses found</h5>
+        <p class="text-muted mb-0">Try a different word or clear the filters.</p>
+    </div>
+
+    @section Scripts {
+        <script>
+        const q = document.getElementById('q');
+        const level = document.getElementById('level');
+        const items = Array.from(document.querySelectorAll('.course-item'));
+        const chips = Array.from(document.querySelectorAll('.chip'));
+        let cat = '';
+
+        function apply() {
+            const term = q.value.trim().toLowerCase();
+            let n = 0;
+            items.forEach(el => {
+                const ok = (!term || el.dataset.title.includes(term))
+                    && (!cat || el.dataset.cat === cat)
+                    && (!level.value || el.dataset.level === level.value);
+                el.classList.toggle('d-none', !ok);
+                if (ok) n++;
+            });
+            document.getElementById('count').textContent = n + (n === 1 ? ' course found' : ' courses found');
+            document.getElementById('empty').classList.toggle('d-none', n !== 0);
+        }
+
+        chips.forEach(ch => ch.addEventListener('click', () => {
+            chips.forEach(x => x.classList.remove('active'));
+            ch.classList.add('active');
+            cat = ch.dataset.cat;
+            apply();
+        }));
+        q.addEventListener('input', apply);
+        level.addEventListener('change', apply);
+        apply();
+        </script>
+    }

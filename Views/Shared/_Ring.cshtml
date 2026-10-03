@@ -1,0 +1,9 @@
+@model int
+
+<div class="ring-wrap">
+    <svg viewBox="0 0 84 84">
+        <circle class="ring-bg" cx="42" cy="42" r="36" />
+        <circle class="ring-fg" cx="42" cy="42" r="36" style="--p:@Model" />
+    </svg>
+    <div class="ring-num">@Model%</div>
+</div>

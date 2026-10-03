@@ -24,32 +24,30 @@ public class CoursesController : Controller
         return User.IsInRole("Instructor") && course.InstructorId == _userManager.GetUserId(User);
     }
 
-    public async Task<IActionResult> Index(string? search, string? category)
+    public async Task<IActionResult> Index()
     {
-        var query = _db.Courses
+        var courses = await _db.Courses
             .Include(c => c.Instructor)
             .Include(c => c.Lessons)
-            .Where(c => c.IsPublished);
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            var s = search.ToLower();
-            query = query.Where(c => c.Title.ToLower().Contains(s) || c.Description.ToLower().Contains(s));
-        }
-
-        if (!string.IsNullOrWhiteSpace(category))
-            query = query.Where(c => c.Category == category);
-
-        ViewBag.Categories = await _db.Courses
+            .Include(c => c.Enrollments)
             .Where(c => c.IsPublished)
-            .Select(c => c.Category)
-            .Distinct()
-            .OrderBy(c => c)
+            .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
-        ViewBag.Search = search;
-        ViewBag.Category = category;
 
-        var courses = await query.OrderByDescending(c => c.CreatedAt).ToListAsync();
+        ViewBag.Categories = courses.Select(c => c.Category).Distinct().OrderBy(c => c).ToList();
+
+        var userId = _userManager.GetUserId(User);
+        var enrolledIds = new HashSet<int>();
+        if (userId != null)
+        {
+            var ids = await _db.Enrollments
+                .Where(e => e.StudentId == userId)
+                .Select(e => e.CourseId)
+                .ToListAsync();
+            enrolledIds = ids.ToHashSet();
+        }
+        ViewBag.EnrolledIds = enrolledIds;
+
         return View(courses);
     }
 
@@ -65,7 +63,25 @@ public class CoursesController : Controller
         var canManage = CanManage(course);
         if (!course.IsPublished && !canManage) return NotFound();
 
+        var userId = _userManager.GetUserId(User);
+        var isEnrolled = false;
+        var done = new HashSet<int>();
+
+        if (userId != null)
+        {
+            isEnrolled = await _db.Enrollments.AnyAsync(e => e.CourseId == id && e.StudentId == userId);
+            var lessonIds = course.Lessons.Select(l => l.Id).ToList();
+            var doneList = await _db.LessonProgresses
+                .Where(p => p.StudentId == userId && lessonIds.Contains(p.LessonId))
+                .Select(p => p.LessonId)
+                .ToListAsync();
+            done = doneList.ToHashSet();
+        }
+
         ViewBag.CanManage = canManage;
+        ViewBag.IsEnrolled = isEnrolled;
+        ViewBag.DoneIds = done;
+        ViewBag.EnrollCount = await _db.Enrollments.CountAsync(e => e.CourseId == id);
         return View(course);
     }
 

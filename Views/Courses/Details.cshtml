@@ -2,57 +2,161 @@
 @{
     ViewData["Title"] = Model.Title;
     var canManage = (bool)(ViewBag.CanManage ?? false);
+    var isEnrolled = (bool)(ViewBag.IsEnrolled ?? false);
+    var done = ViewBag.DoneIds as HashSet<int> ?? new HashSet<int>();
+    var enrollCount = (int)(ViewBag.EnrollCount ?? 0);
+    var signedIn = User.Identity?.IsAuthenticated == true;
+    var celebrate = TempData["Celebrate"] != null;
+    var lessons = Model.Lessons.OrderBy(l => l.Order).ToList();
+    var percent = lessons.Count == 0 ? 0 : done.Count * 100 / lessons.Count;
+    var next = lessons.FirstOrDefault(l => !done.Contains(l.Id)) ?? lessons.FirstOrDefault();
+    var returnUrl = "/Courses/Details/" + Model.Id;
+    var icon = Model.Category switch
+    {
+        "Programming" => "bi-code-slash",
+        "Web Development" => "bi-globe2",
+        "Database" => "bi-database-fill",
+        _ => "bi-mortarboard-fill"
+    };
 }
 
-@if (TempData["Success"] != null)
+@if (celebrate)
 {
-<div class="alert alert-success">@TempData["Success"]</div>
+<div class="glass celebrate">
+    <i class="bi bi-trophy-fill"></i>
+    <div>
+        <h5 class="mb-0">You finished this course!</h5>
+        <span class="text-muted">Great work. Every lesson is complete.</span>
+    </div>
+</div>
 }
 
-<div class="mb-4">
-    <h1>@Model.Title</h1>
-    <p class="text-muted">@Model.Category | @Model.Level | By @Model.Instructor?.FullName</p>
+<div class="detail-hero grad-@(Model.Id % 6) reveal">
+    <i class="bi @icon big-icon"></i>
+    <span class="pill" style="background:rgba(0,0,0,.25);color:#fff;border-color:transparent">@Model.Category</span>
+    <h1 class="mt-3">@Model.Title</h1>
+    <p class="mb-0 opacity-75">By @Model.Instructor?.FullName | @Model.Level | @lessons.Count lessons</p>
     @if (!Model.IsPublished)
     {
-    <span class="badge bg-warning text-dark">Draft</span>
+    <span class="badge bg-warning text-dark mt-3">Draft - only you can see this</span>
     }
-    <p class="mt-3">@Model.Description</p>
 </div>
 
-@if (canManage)
-{
-<div class="mb-4 d-flex gap-2">
-    <a class="btn btn-primary" asp-controller="Lessons" asp-action="Create" asp-route-courseId="@Model.Id">Add lesson</a>
-    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Edit course</a>
-    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Delete this course?');">
-        <button class="btn btn-outline-danger">Delete course</button>
-    </form>
-</div>
-}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="glass p-4 mb-4 reveal">
+            <h4>About this course</h4>
+            <p class="text-muted mb-0" style="white-space:pre-wrap">@Model.Description</p>
+        </div>
 
-<h3>Lessons</h3>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Lessons</h4>
+            @if (canManage)
+            {
+            <a class="btn btn-primary btn-sm" asp-controller="Lessons" asp-action="Create" asp-route-courseId="@Model.Id"><i class="bi bi-plus-lg"></i> Add lesson</a>
+            }
+        </div>
 
-@if (!Model.Lessons.Any())
-{
-<p class="text-muted">No lessons yet.</p>
-}
-else
-{
-<ul class="list-group">
-    @foreach (var l in Model.Lessons.OrderBy(x => x.Order))
+        @if (!lessons.Any())
         {
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-        <span>@(l.Order). @l.Title</span>
-        @if (canManage)
+        <div class="glass p-4 text-muted">No lessons yet.</div>
+        }
+
+        @foreach (var l in lessons)
+        {
+            var isDone = done.Contains(l.Id);
+            var canOpen = isEnrolled || canManage;
+        <div class="lesson-row @(isDone ? "done" : "") reveal">
+            <span class="lesson-num">
+                @if (isDone)
+                    {
+                <i class="bi bi-check-lg"></i>
+                    }
+                    else
+                    {
+                @l.Order
+                    }
+            </span>
+            @if (canOpen)
                 {
-        <span class="d-flex gap-2">
+            <a class="lesson-link" asp-controller="Learn" asp-action="Lesson" asp-route-id="@l.Id">@l.Title</a>
+                }
+                else
+                {
+            <span class="lesson-link">@l.Title</span>
+            <i class="bi bi-lock-fill text-muted"></i>
+                }
+            @if (canManage)
+                {
             <a class="btn btn-sm btn-outline-secondary" asp-controller="Lessons" asp-action="Edit" asp-route-id="@l.Id">Edit</a>
             <form asp-controller="Lessons" asp-action="Delete" asp-route-id="@l.Id" method="post" onsubmit="return confirm('Delete this lesson?');">
                 <button class="btn btn-sm btn-outline-danger">Delete</button>
             </form>
-        </span>
                 }
-    </li>
+        </div>
         }
-</ul>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="glass side-card reveal">
+            @if (isEnrolled)
+            {
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div style="--size:96px"><partial name="_Ring" model="percent" /></div>
+                <div>
+                    <div class="fw-bold">Your progress</div>
+                    <div class="text-muted small">@done.Count of @lessons.Count lessons done</div>
+                </div>
+            </div>
+            @if (next != null)
+                {
+            <a class="btn btn-primary w-100 mb-2" asp-controller="Learn" asp-action="Lesson" asp-route-id="@next.Id">
+                @(done.Count == 0 ? "Start learning" : percent == 100 ? "Review course" : "Continue learning") <i class="bi bi-play-fill"></i>
+            </a>
+                }
+            <form asp-controller="Enrollments" asp-action="Unenroll" method="post" onsubmit="return confirm('Leave this course? Your progress will be removed.');">
+                <input type="hidden" name="courseId" value="@Model.Id" />
+                <button class="btn btn-ghost btn-sm w-100">Leave course</button>
+            </form>
+            }
+            else if (signedIn)
+            {
+            <h5>Ready to learn?</h5>
+            <p class="text-muted small">Enroll to unlock all lessons and track your progress.</p>
+            <form asp-controller="Enrollments" asp-action="Enroll" method="post">
+                <input type="hidden" name="courseId" value="@Model.Id" />
+                <button class="btn btn-primary w-100" disabled="@(!Model.IsPublished)"><i class="bi bi-rocket-takeoff"></i> Enroll now</button>
+            </form>
+            }
+            else
+            {
+            <h5>Ready to learn?</h5>
+            <p class="text-muted small">Log in to enroll and track your progress.</p>
+            <a class="btn btn-primary w-100 mb-2" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">Log in to enroll</a>
+            <a class="btn btn-ghost w-100" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">Create account</a>
+            }
+
+            @if (canManage)
+            {
+            <hr />
+            <a class="btn btn-outline-secondary btn-sm w-100 mb-2" asp-action="Edit" asp-route-id="@Model.Id"><i class="bi bi-pencil"></i> Edit course</a>
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Delete this course?');">
+                <button class="btn btn-outline-danger btn-sm w-100"><i class="bi bi-trash"></i> Delete course</button>
+            </form>
+            }
+
+            <hr />
+            <div class="fact"><span class="text-muted">Level</span><strong>@Model.Level</strong></div>
+            <div class="fact"><span class="text-muted">Lessons</span><strong>@lessons.Count</strong></div>
+            <div class="fact"><span class="text-muted">Learners</span><strong>@enrollCount</strong></div>
+            <div class="fact"><span class="text-muted">Instructor</span><strong>@Model.Instructor?.FullName</strong></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (celebrate)
+    {
+    <script>setTimeout(function () { launchConfetti(); }, 300);</script>
+    }
 }

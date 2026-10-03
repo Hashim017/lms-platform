@@ -1,21 +1,40 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using LMS.Data;
 using LMS.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _db;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ApplicationDbContext db)
     {
-        _logger = logger;
+        _db = db;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var model = new HomeViewModel
+        {
+            CourseCount = await _db.Courses.CountAsync(c => c.IsPublished),
+            LessonCount = await _db.Lessons.CountAsync(l => l.Course!.IsPublished),
+            StudentCount = await _db.Users.CountAsync(),
+            InstructorCount = await _db.Courses.Select(c => c.InstructorId).Distinct().CountAsync(),
+            Featured = await _db.Courses
+                .Include(c => c.Instructor)
+                .Include(c => c.Lessons)
+                .Include(c => c.Enrollments)
+                .Where(c => c.IsPublished)
+                .OrderByDescending(c => c.Enrollments.Count)
+                .ThenByDescending(c => c.CreatedAt)
+                .Take(3)
+                .ToListAsync()
+        };
+
+        return View(model);
     }
 
     public IActionResult Privacy()

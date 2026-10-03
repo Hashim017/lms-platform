@@ -1,8 +1,103 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Learn without limits";
+    var signedIn = User.Identity?.IsAuthenticated == true;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="row align-items-center g-5">
+        <div class="col-lg-7">
+            <span class="pill reveal"><i class="bi bi-stars"></i> Learn at your own pace</span>
+            <h1 class="display-title reveal" style="--d:.08s">
+                Master <span class="grad-text typed" id="rotator" data-words="C#,ASP.NET Core,SQL,Web Design"></span><br />one lesson at a time.
+            </h1>
+            <p class="lead text-muted reveal" style="--d:.16s">
+                Short lessons, clear progress and real courses from real instructors. Enroll in one click and watch your progress ring fill up.
+            </p>
+            <div class="d-flex flex-wrap gap-3 reveal" style="--d:.24s">
+                <a class="btn btn-primary btn-lg" asp-controller="Courses" asp-action="Index">Browse courses <i class="bi bi-arrow-right"></i></a>
+                @if (signedIn)
+                {
+                <a class="btn btn-ghost btn-lg" asp-controller="Enrollments" asp-action="MyLearning">My learning</a>
+                }
+                else
+                {
+                <a class="btn btn-ghost btn-lg" asp-area="Identity" asp-page="/Account/Register">Create free account</a>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-5 d-none d-lg-block">
+            <div class="hero-visual">
+                <div class="float-card main" data-depth="0.6">
+                    <div class="glass p-4 floaty">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div style="--size:76px"><partial name="_Ring" model="72" /></div>
+                            <div>
+                                <div class="small text-muted">Preview</div>
+                                <h5 class="mb-0">C# Fundamentals</h5>
+                            </div>
+                        </div>
+                        <div class="mini-lesson done"><i class="bi bi-check-circle-fill"></i> Introduction to C#</div>
+                        <div class="mini-lesson done"><i class="bi bi-check-circle-fill"></i> Variables and Types</div>
+                        <div class="mini-lesson"><i class="bi bi-circle"></i> Loops and Conditions</div>
+                    </div>
+                </div>
+                <div class="float-card badge1" data-depth="1.4">
+                    <div class="glass px-3 py-2 floaty slow"><i class="bi bi-trophy-fill text-warning"></i> Course complete</div>
+                </div>
+                <div class="float-card badge2" data-depth="1.1">
+                    <div class="glass px-3 py-2 floaty"><i class="bi bi-lightning-charge-fill" style="color:var(--brand2)"></i> Learn every day</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-3 my-4">
+    <div class="col-6 col-lg-3 reveal"><div class="glass stat"><i class="bi bi-journal-richtext"></i><div class="num" data-count="@Model.CourseCount">0</div><div class="text-muted small">Courses</div></div></div>
+    <div class="col-6 col-lg-3 reveal" style="--d:.08s"><div class="glass stat"><i class="bi bi-collection-play"></i><div class="num" data-count="@Model.LessonCount">0</div><div class="text-muted small">Lessons</div></div></div>
+    <div class="col-6 col-lg-3 reveal" style="--d:.16s"><div class="glass stat"><i class="bi bi-people"></i><div class="num" data-count="@Model.StudentCount">0</div><div class="text-muted small">Learners</div></div></div>
+    <div class="col-6 col-lg-3 reveal" style="--d:.24s"><div class="glass stat"><i class="bi bi-person-video3"></i><div class="num" data-count="@Model.InstructorCount">0</div><div class="text-muted small">Instructors</div></div></div>
+</section>
+
+<section class="my-5">
+    <div class="d-flex justify-content-between align-items-end mb-4 reveal">
+        <div>
+            <h2 class="section-title mb-1">Popular <span class="grad-text">right now</span></h2>
+            <p class="text-muted mb-0">Courses other learners love.</p>
+        </div>
+        <a asp-controller="Courses" asp-action="Index">See all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row g-4">
+        @foreach (var (c, i) in Model.Featured.Select((c, i) => (c, i)))
+        {
+        <div class="col-md-6 col-lg-4 reveal" style="--d:@(i * 90)ms">
+            <partial name="_CourseCard" model="c" />
+        </div>
+        }
+    </div>
+</section>
+
+<section class="my-5">
+    <h2 class="section-title text-center mb-4 reveal">How it <span class="grad-text">works</span></h2>
+    <div class="row g-4">
+        <div class="col-md-4 reveal">
+            <div class="glass step"><div class="icon"><i class="bi bi-search"></i></div><h5>Find a course</h5><p class="text-muted mb-0">Search by topic or filter by level and category. Results update as you type.</p></div>
+        </div>
+        <div class="col-md-4 reveal" style="--d:.1s">
+            <div class="glass step"><div class="icon"><i class="bi bi-rocket-takeoff"></i></div><h5>Enroll in one click</h5><p class="text-muted mb-0">Join a course and open every lesson straight away.</p></div>
+        </div>
+        <div class="col-md-4 reveal" style="--d:.2s">
+            <div class="glass step"><div class="icon"><i class="bi bi-trophy"></i></div><h5>Track your progress</h5><p class="text-muted mb-0">Mark lessons complete, fill your ring and celebrate when you finish.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="glass cta my-5 reveal">
+    <h2 class="section-title">Ready to start?</h2>
+    <p class="text-muted">Pick your first course and take the first lesson today.</p>
+    <a class="btn btn-primary btn-lg" asp-controller="Courses" asp-action="Index">Explore courses</a>
+</section>

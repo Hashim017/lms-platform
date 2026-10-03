@@ -1,0 +1,40 @@
+@model Course
+@{
+    var enrolled = ViewData["EnrolledIds"] as HashSet<int>;
+    var isIn = enrolled != null && enrolled.Contains(Model.Id);
+    var icon = Model.Category switch
+    {
+        "Programming" => "bi-code-slash",
+        "Web Development" => "bi-globe2",
+        "Database" => "bi-database-fill",
+        _ => "bi-mortarboard-fill"
+    };
+    var teacher = Model.Instructor?.FullName ?? "";
+    var initial = string.IsNullOrWhiteSpace(teacher) ? "?" : teacher.Substring(0, 1).ToUpper();
+    var desc = Model.Description.Length > 90 ? Model.Description.Substring(0, 90) + "..." : Model.Description;
+}
+
+<div class="glass course-card" data-tilt>
+    <div class="cover grad-@(Model.Id % 6)">
+        <i class="bi @icon"></i>
+        <span class="level-tag">@Model.Level</span>
+        @if (isIn)
+        {
+        <span class="enrolled-tag"><i class="bi bi-check2-circle" style="font-size:.8rem;animation:none"></i> Enrolled</span>
+        }
+    </div>
+    <div class="p-3 d-flex flex-column flex-grow-1">
+        <span class="cat-tag">@Model.Category</span>
+        <h5 class="mt-2 mb-2">@Model.Title</h5>
+        <p class="text-muted small flex-grow-1">@desc</p>
+        <div class="d-flex justify-content-between small text-muted mb-3">
+            <span><i class="bi bi-collection-play"></i> @Model.Lessons.Count lessons</span>
+            <span><i class="bi bi-people"></i> @Model.Enrollments.Count enrolled</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="avatar sm">@initial</span>
+            <span class="small">@teacher</span>
+        </div>
+    </div>
+    <a class="stretched-link" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Id" aria-label="Open @Model.Title"></a>
+</div>

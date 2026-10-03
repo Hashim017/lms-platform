@@ -178,3 +178,34 @@ public class LessonFormViewModel
     [Range(1, 1000)]
     public int Order { get; set; } = 1;
 }
+
+public class HomeViewModel
+{
+    public int CourseCount { get; set; }
+    public int LessonCount { get; set; }
+    public int StudentCount { get; set; }
+    public int InstructorCount { get; set; }
+    public List<Course> Featured { get; set; } = new();
+}
+
+public class MyCourseItem
+{
+    public Course Course { get; set; } = null!;
+    public int TotalLessons { get; set; }
+    public int DoneLessons { get; set; }
+    public bool IsCompleted { get; set; }
+    public int? ResumeLessonId { get; set; }
+    public int Percent => TotalLessons == 0 ? 0 : DoneLessons * 100 / TotalLessons;
+}
+
+public class LessonPageViewModel
+{
+    public Course Course { get; set; } = null!;
+    public Lesson Lesson { get; set; } = null!;
+    public List<Lesson> Lessons { get; set; } = new();
+    public HashSet<int> DoneIds { get; set; } = new();
+    public bool IsEnrolled { get; set; }
+    public Lesson? Prev { get; set; }
+    public Lesson? Next { get; set; }
+    public int Percent => Lessons.Count == 0 ? 0 : DoneIds.Count * 100 / Lessons.Count;
+}

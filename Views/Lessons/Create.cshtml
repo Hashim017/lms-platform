@@ -3,14 +3,15 @@
     ViewData["Title"] = "Add lesson";
 }
 
-<h1>Add lesson</h1>
-
-<form asp-action="Create" method="post">
-    <input type="hidden" asp-for="CourseId" />
-    <partial name="_LessonForm" model="Model" />
-    <button class="btn btn-primary">Save</button>
-    <a class="btn btn-secondary" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Cancel</a>
-</form>
+<div class="glass form-card reveal">
+    <h2 class="mb-4">Add <span class="grad-text">lesson</span></h2>
+    <form asp-action="Create" method="post">
+        <input type="hidden" asp-for="CourseId" />
+        <partial name="_LessonForm" model="Model" />
+        <button class="btn btn-primary">Save lesson</button>
+        <a class="btn btn-ghost" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Cancel</a>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
