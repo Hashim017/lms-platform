@@ -209,3 +209,102 @@ public class LessonPageViewModel
     public Lesson? Next { get; set; }
     public int Percent => Lessons.Count == 0 ? 0 : DoneIds.Count * 100 / Lessons.Count;
 }
+
+public class QuizFormViewModel
+{
+    public int Id { get; set; }
+    public int CourseId { get; set; }
+
+    [Required, StringLength(120)]
+    public string Title { get; set; } = string.Empty;
+
+    [Range(1, 100), Display(Name = "Pass mark in percent")]
+    public int PassMark { get; set; } = 50;
+}
+
+public class QuestionFormViewModel
+{
+    public int QuizId { get; set; }
+
+    [Required, StringLength(500)]
+    public string Text { get; set; } = string.Empty;
+
+    [Required, StringLength(200)]
+    public string Option1 { get; set; } = string.Empty;
+
+    [Required, StringLength(200)]
+    public string Option2 { get; set; } = string.Empty;
+
+    [StringLength(200)]
+    public string? Option3 { get; set; }
+
+    [StringLength(200)]
+    public string? Option4 { get; set; }
+
+    [Range(1, 4)]
+    public int CorrectIndex { get; set; } = 1;
+}
+
+public class QuizEditViewModel
+{
+    public Quiz Quiz { get; set; } = null!;
+    public Course Course { get; set; } = null!;
+    public List<QuizAttempt> Attempts { get; set; } = new();
+}
+
+public class QuizTakeViewModel
+{
+    public Quiz Quiz { get; set; } = null!;
+    public Course Course { get; set; } = null!;
+    public List<QuizAttempt> Attempts { get; set; } = new();
+    public int BestPercent => Attempts.Count == 0
+        ? 0
+        : Attempts.Max(a => a.Total == 0 ? 0 : a.Score * 100 / a.Total);
+}
+
+public class ReviewItem
+{
+    public string Question { get; set; } = string.Empty;
+    public List<AnswerOption> Options { get; set; } = new();
+    public int SelectedId { get; set; }
+    public int CorrectId { get; set; }
+}
+
+public class QuizResultViewModel
+{
+    public Quiz Quiz { get; set; } = null!;
+    public Course Course { get; set; } = null!;
+    public int Score { get; set; }
+    public int Total { get; set; }
+    public bool Passed { get; set; }
+    public List<ReviewItem> Items { get; set; } = new();
+    public int Percent => Total == 0 ? 0 : Score * 100 / Total;
+}
+
+public class AssignmentFormViewModel
+{
+    public int Id { get; set; }
+    public int CourseId { get; set; }
+
+    [Required, StringLength(120)]
+    public string Title { get; set; } = string.Empty;
+
+    [Required, StringLength(4000)]
+    public string Instructions { get; set; } = string.Empty;
+
+    [Display(Name = "Due date")]
+    public DateTime DueDate { get; set; } = DateTime.UtcNow.AddDays(7);
+
+    [Range(1, 1000), Display(Name = "Max score")]
+    public int MaxScore { get; set; } = 100;
+}
+
+public class AssignmentPageViewModel
+{
+    public Assignment Assignment { get; set; } = null!;
+    public Course Course { get; set; } = null!;
+    public Submission? Mine { get; set; }
+    public List<Submission> All { get; set; } = new();
+    public bool CanManage { get; set; }
+    public bool IsEnrolled { get; set; }
+}

@@ -1,0 +1,141 @@
+@model QuizTakeViewModel
+@{
+    ViewData["Title"] = Model.Quiz.Title;
+    var canSubmit = (bool)(ViewBag.CanSubmit ?? false);
+    var canManage = (bool)(ViewBag.CanManage ?? false);
+    var questions = Model.Quiz.Questions.ToList();
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="glass p-4 p-md-5 reveal">
+            <a class="small" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id"><i class="bi bi-arrow-left"></i> @Model.Course.Title</a>
+            <h1 class="h2 mt-3">@Model.Quiz.Title</h1>
+            <p class="text-muted">@questions.Count questions | Pass mark @Model.Quiz.PassMark%</p>
+
+            @if (!questions.Any())
+            {
+            <div class="text-muted">This quiz has no questions yet.</div>
+            }
+            else
+            {
+            <form id="quizForm" asp-action="Submit" asp-route-id="@Model.Quiz.Id" method="post">
+                <div class="qprogress"><div class="qbar" id="qbar"></div></div>
+                <div class="small text-muted mb-4" id="qcount"></div>
+
+                @for (var i = 0; i < questions.Count; i++)
+                    {
+                        var q = questions[i];
+                        var n = 0;
+                <div class="qstep" data-index="@i">
+                    <h4 class="mb-3">@q.Text</h4>
+                    @foreach (var o in q.Options.OrderBy(x => x.Id))
+                            {
+                                n++;
+                    <label class="qopt">
+                        <input type="radio" name="answers[@q.Id]" value="@o.Id" />
+                        <span class="mark"></span>
+                        <span>@o.Text</span>
+                        <span class="key">@n</span>
+                    </label>
+                            }
+                </div>
+                    }
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" id="prevBtn" class="btn btn-ghost"><i class="bi bi-arrow-left"></i> Back</button>
+                    <button type="button" id="nextBtn" class="btn btn-primary">Next <i class="bi bi-arrow-right"></i></button>
+                    @if (canSubmit)
+                        {
+                    <button type="submit" id="submitBtn" class="btn btn-primary d-none"><i class="bi bi-send"></i> Finish quiz</button>
+                        }
+                </div>
+                @if (!canSubmit)
+                    {
+                <p class="small text-muted mt-3 mb-0">Preview mode. Only enrolled students can submit.</p>
+                    }
+            </form>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="glass side-card reveal">
+            <h5>Your best score</h5>
+            <div class="d-flex align-items-center gap-3 my-3">
+                <div style="--size:92px"><partial name="_Ring" model="Model.BestPercent" /></div>
+                <div class="text-muted small">@Model.Attempts.Count attempts so far</div>
+            </div>
+
+            @foreach (var a in Model.Attempts.Take(5))
+            {
+                var pct = a.Total == 0 ? 0 : a.Score * 100 / a.Total;
+            <div class="attempt-row">
+                <span>@a.TakenAt.ToString("dd MMM, HH:mm")</span>
+                <strong>@a.Score / @a.Total | @pct%</strong>
+            </div>
+            }
+
+            <hr />
+            <p class="small text-muted mb-0">Tip: press the number keys to pick an answer. Use the right arrow for the next question.</p>
+
+            @if (canManage)
+            {
+            <a class="btn btn-outline-secondary btn-sm w-100 mt-3" asp-action="Edit" asp-route-id="@Model.Quiz.Id"><i class="bi bi-pencil"></i> Edit quiz</a>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var steps = Array.from(document.querySelectorAll('.qstep'));
+            if (!steps.length) return;
+
+            var form = document.getElementById('quizForm');
+            var prev = document.getElementById('prevBtn');
+            var next = document.getElementById('nextBtn');
+            var submit = document.getElementById('submitBtn');
+            var bar = document.getElementById('qbar');
+            var count = document.getElementById('qcount');
+            var i = 0;
+
+            function show() {
+                steps.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+                bar.style.width = ((i + 1) / steps.length * 100) + '%';
+                count.textContent = 'Question ' + (i + 1) + ' of ' + steps.length;
+                prev.classList.toggle('invisible', i === 0);
+
+                var answered = !!steps[i].querySelector('input:checked');
+                var last = i === steps.length - 1;
+                next.classList.toggle('d-none', last);
+                next.disabled = !answered;
+                if (submit) {
+                    submit.classList.toggle('d-none', !last);
+                    submit.disabled = !answered;
+                }
+            }
+
+            function goNext() { if (i < steps.length - 1 && !next.disabled) { i++; show(); } }
+            function goPrev() { if (i > 0) { i--; show(); } }
+
+            steps.forEach(function (s) { s.addEventListener('change', show); });
+            next.addEventListener('click', goNext);
+            prev.addEventListener('click', goPrev);
+
+            form.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowRight') goNext();
+                if (e.key === 'ArrowLeft') goPrev();
+                var n = parseInt(e.key, 10);
+                if (n >= 1 && n <= 9) {
+                    var inputs = steps[i].querySelectorAll('input');
+                    if (inputs[n - 1]) { inputs[n - 1].checked = true; show(); }
+                }
+            });
+
+            show();
+        })();
+    </script>
+}

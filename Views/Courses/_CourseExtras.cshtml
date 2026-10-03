@@ -1,0 +1,74 @@
+@model Course
+@{
+    var canManage = (bool)(ViewBag.CanManage ?? false);
+    var isEnrolled = (bool)(ViewBag.IsEnrolled ?? false);
+    var canOpen = canManage || isEnrolled;
+}
+
+<div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+    <h4 class="mb-0">Quizzes</h4>
+    @if (canManage)
+    {
+    <a class="btn btn-primary btn-sm" asp-controller="Quizzes" asp-action="Create" asp-route-courseId="@Model.Id"><i class="bi bi-plus-lg"></i> New quiz</a>
+    }
+</div>
+
+@if (!Model.Quizzes.Any())
+{
+<div class="glass p-4 text-muted">No quizzes yet.</div>
+}
+
+@foreach (var q in Model.Quizzes.OrderBy(x => x.Id))
+{
+<div class="lesson-row reveal">
+    <span class="lesson-num"><i class="bi bi-patch-question"></i></span>
+    @if (canOpen)
+        {
+    <a class="lesson-link" asp-controller="Quizzes" asp-action="Take" asp-route-id="@q.Id">@q.Title</a>
+        }
+        else
+        {
+    <span class="lesson-link">@q.Title</span>
+    <i class="bi bi-lock-fill text-muted"></i>
+        }
+    <span class="small text-muted">@q.Questions.Count questions | pass @q.PassMark%</span>
+    @if (canManage)
+        {
+    <a class="btn btn-sm btn-outline-secondary" asp-controller="Quizzes" asp-action="Edit" asp-route-id="@q.Id">Edit</a>
+        }
+</div>
+}
+
+<div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+    <h4 class="mb-0">Assignments</h4>
+    @if (canManage)
+    {
+    <a class="btn btn-primary btn-sm" asp-controller="Assignments" asp-action="Create" asp-route-courseId="@Model.Id"><i class="bi bi-plus-lg"></i> New assignment</a>
+    }
+</div>
+
+@if (!Model.Assignments.Any())
+{
+<div class="glass p-4 text-muted">No assignments yet.</div>
+}
+
+@foreach (var a in Model.Assignments.OrderBy(x => x.DueDate))
+{
+<div class="lesson-row reveal">
+    <span class="lesson-num"><i class="bi bi-journal-text"></i></span>
+    @if (canOpen)
+        {
+    <a class="lesson-link" asp-controller="Assignments" asp-action="Details" asp-route-id="@a.Id">@a.Title</a>
+        }
+        else
+        {
+    <span class="lesson-link">@a.Title</span>
+    <i class="bi bi-lock-fill text-muted"></i>
+        }
+    <span class="small text-muted">Due @a.DueDate.ToString("dd MMM yyyy")</span>
+    @if (canManage)
+        {
+    <a class="btn btn-sm btn-outline-secondary" asp-controller="Assignments" asp-action="Edit" asp-route-id="@a.Id">Edit</a>
+        }
+</div>
+}

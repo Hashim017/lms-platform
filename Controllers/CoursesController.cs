@@ -56,6 +56,8 @@ public class CoursesController : Controller
         var course = await _db.Courses
             .Include(c => c.Instructor)
             .Include(c => c.Lessons)
+            .Include(c => c.Quizzes).ThenInclude(q => q.Questions)
+            .Include(c => c.Assignments)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (course == null) return NotFound();

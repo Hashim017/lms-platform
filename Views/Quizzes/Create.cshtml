@@ -1,0 +1,31 @@
+@model QuizFormViewModel
+@{
+    ViewData["Title"] = "New quiz";
+}
+
+<div class="glass form-card reveal">
+    <h2 class="mb-4">New <span class="grad-text">quiz</span></h2>
+    <form asp-action="Create" method="post">
+        <input type="hidden" asp-for="CourseId" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PassMark" class="form-label"></label>
+            <input asp-for="PassMark" class="form-control" />
+            <span asp-validation-for="PassMark" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-primary">Create and add questions</button>
+        <a class="btn btn-ghost" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

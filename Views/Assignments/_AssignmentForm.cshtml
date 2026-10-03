@@ -1,0 +1,29 @@
+@model AssignmentFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="mb-3">
+    <label asp-for="Title" class="form-label"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Instructions" class="form-label"></label>
+    <textarea asp-for="Instructions" class="form-control" rows="6"></textarea>
+    <span asp-validation-for="Instructions" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mb-3">
+        <label asp-for="DueDate" class="form-label"></label>
+        <input asp-for="DueDate" class="form-control" />
+        <div class="form-text">The time is in UTC.</div>
+        <span asp-validation-for="DueDate" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="MaxScore" class="form-label"></label>
+        <input asp-for="MaxScore" class="form-control" />
+        <span asp-validation-for="MaxScore" class="text-danger"></span>
+    </div>
+</div>
