@@ -11,14 +11,24 @@
         <div class="col-lg-7">
             <span class="pill reveal"><i class="bi bi-stars"></i> Learn at your own pace</span>
             <h1 class="display-title reveal" style="--d:.08s">
-                Master <span class="grad-text typed" id="rotator" data-words="C#,ASP.NET Core,SQL,Web Design"></span><br />one lesson at a time.
+                <span class="d-block">Master</span>
+                <span class="grad-text typed" id="rotator" data-words="C#,ASP.NET Core,SQL,Web Design"></span>
+                <span class="d-block">one lesson at a time.</span>
             </h1>
             <p class="lead text-muted reveal" style="--d:.16s">
                 Short lessons, clear progress and real courses from real instructors. Enroll in one click and watch your progress ring fill up.
             </p>
             <div class="d-flex flex-wrap gap-3 reveal" style="--d:.24s">
                 <a class="btn btn-primary btn-lg" asp-controller="Courses" asp-action="Index">Browse courses <i class="bi bi-arrow-right"></i></a>
-                @if (signedIn)
+                @if (User.IsInRole("Admin"))
+                {
+                <a class="btn btn-ghost btn-lg" asp-controller="Admin" asp-action="Index">Admin dashboard</a>
+                }
+                else if (User.IsInRole("Instructor"))
+                {
+                <a class="btn btn-ghost btn-lg" asp-controller="Courses" asp-action="Manage">Manage my courses</a>
+                }
+                else if (signedIn)
                 {
                 <a class="btn btn-ghost btn-lg" asp-controller="Enrollments" asp-action="MyLearning">My learning</a>
                 }

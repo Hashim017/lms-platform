@@ -23,6 +23,8 @@ public class EnrollmentsController : Controller
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return Challenge();
+        if (User.IsInRole("Admin")) return RedirectToAction("Index", "Admin");
+        if (User.IsInRole("Instructor")) return RedirectToAction("Manage", "Courses");
 
         ViewBag.Name = string.IsNullOrWhiteSpace(user.FullName) ? "there" : user.FullName;
 
@@ -64,6 +66,12 @@ public class EnrollmentsController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Enroll(int courseId)
     {
+        if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
+        {
+            TempData["Error"] = "Instructors and admins manage courses. They do not enroll.";
+            return RedirectToAction("Details", "Courses", new { id = courseId });
+        }
+
         var course = await _db.Courses.FindAsync(courseId);
         if (course == null || !course.IsPublished) return NotFound();
 

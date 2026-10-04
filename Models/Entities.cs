@@ -379,3 +379,12 @@ public class RegisterViewModel
 
     public string? ReturnUrl { get; set; }
 }
+
+public class AccountSettingsViewModel
+{
+    public string FullName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Role { get; set; } = "Student";
+    public DateTime CreatedAt { get; set; }
+    public string Tab { get; set; } = "profile";
+}

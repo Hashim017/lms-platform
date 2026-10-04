@@ -1,0 +1,139 @@
+@model AccountSettingsViewModel
+@{
+    ViewData["Title"] = "Account settings";
+    var initial = string.IsNullOrWhiteSpace(Model.FullName)
+        ? Model.Email.Substring(0, 1).ToUpper()
+        : Model.FullName.Substring(0, 1).ToUpper();
+}
+
+<div class="page-head reveal">
+    <h1>Account <span class="grad-text">settings</span></h1>
+    <p class="text-muted">Manage your profile and your security.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="glass p-4 text-center mb-3 reveal">
+            <div class="avatar xl">@initial</div>
+            <h5 class="mb-1">@(string.IsNullOrWhiteSpace(Model.FullName) ? "No name yet" : Model.FullName)</h5>
+            <div class="text-muted small mb-2">@Model.Email</div>
+            <span class="set-role">@Model.Role</span>
+            <div class="text-muted small mt-3">Member since @Model.CreatedAt.ToString("MMM yyyy")</div>
+        </div>
+
+        <div class="glass p-2 settings-nav reveal">
+            <button type="button" class="snav" data-tab="profile"><i class="bi bi-person"></i> Profile</button>
+            <button type="button" class="snav" data-tab="email"><i class="bi bi-envelope"></i> Email</button>
+            <button type="button" class="snav" data-tab="password"><i class="bi bi-key"></i> Password</button>
+            <button type="button" class="snav" data-tab="delete"><i class="bi bi-trash"></i> Delete account</button>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="glass pane-card" data-pane="profile">
+            <h4 class="mb-1">Profile</h4>
+            <p class="text-muted">This name shows on your courses and submissions.</p>
+            <form asp-action="UpdateProfile" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <div class="field">
+                        <i class="bi bi-person"></i>
+                        <input class="form-control" name="fullName" value="@Model.FullName" maxlength="80" required />
+                    </div>
+                </div>
+                <button class="btn btn-primary">Save profile</button>
+            </form>
+        </div>
+
+        <div class="glass pane-card d-none" data-pane="email">
+            <h4 class="mb-1">Email</h4>
+            <p class="text-muted">Your email is also your login. Now: <strong>@Model.Email</strong></p>
+            <form asp-action="ChangeEmail" method="post">
+                <div class="mb-3">
+                    <label class="form-label">New email</label>
+                    <div class="field">
+                        <i class="bi bi-envelope"></i>
+                        <input class="form-control" type="email" name="newEmail" required />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Your password</label>
+                    <div class="field">
+                        <i class="bi bi-lock"></i>
+                        <input class="form-control" type="password" name="password" required />
+                        <button type="button" class="eye" data-eye aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+                <button class="btn btn-primary">Change email</button>
+            </form>
+        </div>
+
+        <div class="glass pane-card d-none" data-pane="password">
+            <h4 class="mb-1">Password</h4>
+            <p class="text-muted">Use at least 6 characters.</p>
+            <form asp-action="ChangePassword" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Current password</label>
+                    <div class="field">
+                        <i class="bi bi-lock"></i>
+                        <input class="form-control" type="password" name="currentPassword" required />
+                        <button type="button" class="eye" data-eye aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">New password</label>
+                    <div class="field">
+                        <i class="bi bi-key"></i>
+                        <input class="form-control" type="password" name="newPassword" minlength="6" required />
+                        <button type="button" class="eye" data-eye aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirm new password</label>
+                    <div class="field">
+                        <i class="bi bi-shield-check"></i>
+                        <input class="form-control" type="password" name="confirmPassword" minlength="6" required />
+                        <button type="button" class="eye" data-eye aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+                <button class="btn btn-primary">Change password</button>
+            </form>
+        </div>
+
+        <div class="glass pane-card danger-zone d-none" data-pane="delete">
+            <h4 class="mb-1">Delete account</h4>
+            <p class="text-muted">This removes your account, enrollments, progress, quiz attempts and submissions. You cannot undo it.</p>
+            <form asp-action="DeleteAccount" method="post" onsubmit="return confirm('Delete your account for good?');">
+                <div class="mb-3">
+                    <label class="form-label">Type your password to confirm</label>
+                    <div class="field">
+                        <i class="bi bi-lock"></i>
+                        <input class="form-control" type="password" name="password" required />
+                        <button type="button" class="eye" data-eye aria-label="Show password"><i class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+                <button class="btn btn-outline-danger"><i class="bi bi-trash"></i> Delete my account</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var tabs = document.querySelectorAll('[data-tab]');
+            var panes = document.querySelectorAll('[data-pane]');
+
+            function openTab(name) {
+                tabs.forEach(function (t) { t.classList.toggle('active', t.dataset.tab === name); });
+                panes.forEach(function (p) { p.classList.toggle('d-none', p.dataset.pane !== name); });
+            }
+
+            tabs.forEach(function (t) {
+                t.addEventListener('click', function () { openTab(t.dataset.tab); });
+            });
+
+            openTab('@Model.Tab');
+        })();
+    </script>
+}
