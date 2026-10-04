@@ -2,7 +2,7 @@
 
 A full learning management system built with ASP.NET Core MVC, Entity Framework Core and PostgreSQL.
 
-**Live demo:** https://YOUR-APP-NAME.onrender.com
+**Live demo:** https://lumen-lms.onrender.com/
 
 The free server sleeps when idle. The first visit can take about 30 seconds.
 
@@ -46,8 +46,8 @@ The free server sleeps when idle. The first visit can take about 30 seconds.
 2. Clone the repo.
 
 ```
-   git clone https://github.com/Hashim017/lms-platform.git
-   cd lms-platform
+   git clone https://github.com/Hashim017/lumen-lms.git
+   cd lumen-lms
 ```
 
 3. Set your secrets.
@@ -100,4 +100,4 @@ The health check path is `/healthz`.
 
 ## Author
 
-Built by Hash as the Auspify internship Task 6.
+Built by Muhammad Hashim.
