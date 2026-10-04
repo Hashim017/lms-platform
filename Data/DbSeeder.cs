@@ -30,8 +30,10 @@ public static class DbSeeder
         var student = await CreateUserAsync(userManager, "student@lms.com", "Ali Raza", "Student@123", StudentRole);
 
         if (await db.Courses.AnyAsync())
+        {
+            await DemoContent.AddMoreAsync(services);
             return;
-
+        }
         var course1 = new Course
         {
             Title = "C# Fundamentals",
@@ -124,9 +126,10 @@ public static class DbSeeder
         db.Assignments.Add(assignment);
         db.Enrollments.Add(new Enrollment { CourseId = course1.Id, StudentId = student.Id });
         await db.SaveChangesAsync();
+        await DemoContent.AddMoreAsync(services);
     }
 
-    private static async Task<ApplicationUser> CreateUserAsync(
+     internal static async Task<ApplicationUser> CreateUserAsync(
         UserManager<ApplicationUser> userManager,
         string email,
         string fullName,
