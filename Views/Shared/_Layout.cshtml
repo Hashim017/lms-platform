@@ -49,7 +49,7 @@
                 <ul class="navbar-nav me-auto gap-lg-1 mt-3 mt-lg-0">
                     <li class="nav-item"><a class="nav-link @(navHome ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li class="nav-item"><a class="nav-link @(navCourses ? "active" : "")" asp-controller="Courses" asp-action="Index">Courses</a></li>
-                    @if (signedIn && !isStaff)@if (signedIn)
+                    @if (signedIn && !isStaff)
                     {
                     <li class="nav-item"><a class="nav-link @(navLearn ? "active" : "")" asp-controller="Enrollments" asp-action="MyLearning">My learning</a></li>
                     }
