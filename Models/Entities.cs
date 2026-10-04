@@ -308,3 +308,74 @@ public class AssignmentPageViewModel
     public bool CanManage { get; set; }
     public bool IsEnrolled { get; set; }
 }
+
+public class DayCount
+{
+    public string Label { get; set; } = string.Empty;
+    public int Count { get; set; }
+}
+
+public class TopCourse
+{
+    public string Title { get; set; } = string.Empty;
+    public string Instructor { get; set; } = string.Empty;
+    public int Learners { get; set; }
+}
+
+public class AdminDashboardViewModel
+{
+    public int Users { get; set; }
+    public int Students { get; set; }
+    public int Instructors { get; set; }
+    public int Courses { get; set; }
+    public int Published { get; set; }
+    public int Enrollments { get; set; }
+    public int Completed { get; set; }
+    public int QuizAttempts { get; set; }
+    public int Submissions { get; set; }
+    public List<DayCount> PerDay { get; set; } = new();
+    public List<TopCourse> Top { get; set; } = new();
+    public int CompletionRate => Enrollments == 0 ? 0 : Completed * 100 / Enrollments;
+}
+
+public class UserRow
+{
+    public string Id { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
+    public string Role { get; set; } = "Student";
+    public DateTime CreatedAt { get; set; }
+    public int Enrolled { get; set; }
+}
+
+public class LoginViewModel
+{
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required, DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+
+    [Display(Name = "Remember me")]
+    public bool RememberMe { get; set; }
+
+    public string? ReturnUrl { get; set; }
+}
+
+public class RegisterViewModel
+{
+    [Required, StringLength(80), Display(Name = "Full name")]
+    public string FullName { get; set; } = string.Empty;
+
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required, StringLength(100, MinimumLength = 6), DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+
+    [Required, DataType(DataType.Password), Display(Name = "Confirm password")]
+    [Compare("Password", ErrorMessage = "The passwords do not match.")]
+    public string ConfirmPassword { get; set; } = string.Empty;
+
+    public string? ReturnUrl { get; set; }
+}

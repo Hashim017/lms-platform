@@ -57,6 +57,10 @@
                     {
                     <li class="nav-item"><a class="nav-link @(navManage ? "active" : "")" asp-controller="Courses" asp-action="Manage">Manage courses</a></li>
                     }
+                    @if (User.IsInRole("Admin"))
+                    {
+                    <li class="nav-item"><a class="nav-link @(ctrl == "Admin" ? "active" : "")" asp-controller="Admin" asp-action="Index">Admin</a></li>
+                    }
                 </ul>
                 <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
                     <button id="themeToggle" type="button" class="btn-icon" aria-label="Toggle theme"></button>

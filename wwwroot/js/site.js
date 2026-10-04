@@ -132,3 +132,42 @@
         })();
     };
 })();
+
+(function () {
+    document.querySelectorAll('[data-eye]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            var input = b.parentElement.querySelector('input');
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            b.innerHTML = show ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+        });
+    });
+
+    document.querySelectorAll('[data-demo]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            document.getElementById('Email').value = b.dataset.email;
+            document.getElementById('Password').value = b.dataset.pass;
+        });
+    });
+
+    var meter = document.getElementById('strength');
+    var pw = document.getElementById('Password');
+    if (meter && pw) {
+        var text = document.getElementById('strengthText');
+        var names = ['Too short', 'Weak', 'Okay', 'Good', 'Strong'];
+        var colors = ['#ff6b9d', '#ff6b9d', '#ffb020', '#22d3ee', '#22c993'];
+        pw.addEventListener('input', function () {
+            var v = pw.value;
+            var s = 0;
+            if (v.length >= 6) {
+                s = 1;
+                if (v.length >= 10) s++;
+                if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
+                if (/\d/.test(v) && /[^A-Za-z0-9]/.test(v)) s++;
+            }
+            meter.style.setProperty('--s', v ? Math.max(s, 0.5) : 0);
+            meter.style.setProperty('--c', colors[s]);
+            text.textContent = v ? names[s] : 'Use at least 6 characters with a number.';
+        });
+    }
+})();

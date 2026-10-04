@@ -1,0 +1,68 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Sign up";
+    ViewData["SideTitle"] = "Start learning today";
+    ViewData["SideText"] = "Create a free account and enroll in your first course in under a minute.";
+}
+
+<div class="auth-wrap reveal">
+    <partial name="_AuthSide" />
+
+    <div class="auth-card">
+        <h2>Create your account</h2>
+        <p class="text-muted">It is free and takes one minute.</p>
+
+        <form asp-action="Register" method="post">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <div class="field">
+                    <i class="bi bi-person"></i>
+                    <input asp-for="FullName" class="form-control" placeholder="Your full name" autocomplete="name" />
+                </div>
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <div class="field">
+                    <i class="bi bi-envelope"></i>
+                    <input asp-for="Email" class="form-control" placeholder="you@example.com" autocomplete="email" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <div class="field">
+                    <i class="bi bi-lock"></i>
+                    <input asp-for="Password" class="form-control" placeholder="Create a password" autocomplete="new-password" />
+                    <button type="button" class="eye" data-eye aria-label="Show password"><i class="bi bi-eye"></i></button>
+                </div>
+                <div class="strength" id="strength"><span></span></div>
+                <div class="small text-muted mt-1" id="strengthText">Use at least 6 characters with a number.</div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <div class="field">
+                    <i class="bi bi-shield-check"></i>
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Repeat the password" autocomplete="new-password" />
+                    <button type="button" class="eye" data-eye aria-label="Show password"><i class="bi bi-eye"></i></button>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+            </div>
+
+            <button class="btn btn-primary btn-lg w-100">Create account <i class="bi bi-arrow-right"></i></button>
+        </form>
+
+        <p class="text-muted mt-4 mb-0">Already have an account? <a asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">Log in</a></p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
