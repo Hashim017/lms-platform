@@ -1,103 +1,265 @@
-# Lumen LMS
+﻿<div align="center">
 
-A full learning management system built with ASP.NET Core MVC, Entity Framework Core and PostgreSQL.
+# 📚 Lumen LMS
 
-**Live demo:** https://lumen-lms.onrender.com/
+**Courses, quizzes, assignments and progress tracking in one platform.**
 
-The free server sleeps when idle. The first visit can take about 30 seconds.
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-512BD4?logo=dotnet&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?logo=render&logoColor=black)
 
-## Features
+[Live Demo](https://lumen-lms.onrender.com/)
 
-**Students**
-- Browse and search 25 demo courses with live filters
-- Enroll in one click
-- Open lessons, mark them complete and watch the progress ring fill
-- Take quizzes one question at a time, then see a full answer review
-- Submit assignments and read grades and feedback
-- My learning page with stats
+</div>
 
-**Instructors**
-- Create, edit, publish and delete courses and lessons
-- Build quizzes with multiple choice questions
-- Create assignments with due dates and grade submissions
-- See quiz attempts for each quiz
+## 📑 Table of Contents
 
-**Admins**
-- Dashboard with platform stats, a 7 day enrollment chart and top courses
-- User management with role changes
+- [About](#-about)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Screenshots](#-screenshots)
+- [Getting Started](#-getting-started)
+- [Demo Accounts](#-demo-accounts)
+- [Author](#-author)
 
-**Everyone**
-- Custom login, sign up and account settings pages
-- Dark and light themes
-- Animated UI with a responsive layout
+## 📖 About
 
-## Tech stack
+Lumen LMS lets instructors create courses and lets students learn, take quizzes, submit assignments and see their progress. It was built as Task 6, the final task of the Auspify internship.
 
-- ASP.NET Core 9 MVC
-- ASP.NET Core Identity with roles
-- Entity Framework Core with Npgsql
-- Neon PostgreSQL
-- Bootstrap 5, Bootstrap Icons and vanilla JavaScript
-- Docker, deployed on Render
+## 🚀 Features
 
-## Run it locally
+| Feature | Description |
+|---|---|
+| Authentication | Secure login with role-based access |
+| Course management | Create and organize courses |
+| Enrollment | Students join courses |
+| Quizzes | Take quizzes and see scores |
+| Assignments | Submit and review work |
+| Progress tracking | See how far each student has come |
 
-1. Install the .NET 9 SDK and create a PostgreSQL database.
-2. Clone the repo.
+## 🧰 Tech Stack
 
+| Layer | Technology |
+|---|---|
+| Framework | ASP.NET Core on .NET 9 |
+| Language | C# |
+| Database | PostgreSQL on Neon |
+| ORM | Entity Framework Core |
+| Hosting | Docker on Render |
+
+## 🖼 Screenshots
+
+### Landing Page
+
+#### Landing Page - Light
+<img src="docs/screenshots/landing-page-light.PNG" alt="Landing Page Light" width="600">
+
+#### Landing Page - Dark
+<img src="docs/screenshots/landing-page-dark.PNG" alt="Landing Page Dark" width="600">
+
+#### Landing Page - Section 2
+<img src="docs/screenshots/landing-page2-light.PNG" alt="Landing Page 2" width="600">
+
+#### Landing Page - Section 3
+<img src="docs/screenshots/landing-page3-light.PNG" alt="Landing Page 3" width="600">
+
+
+### Authentication
+
+#### Register / Login - Light
+<img src="docs/screenshots/register-login-light.png" alt="Register Login Light" width="600">
+
+#### Register / Login - Dark
+<img src="docs/screenshots/register-login-dark.png" alt="Register Login Dark" width="600">
+
+
+### Course Discovery
+
+#### Explore Courses
+<img src="docs/screenshots/explore-courses2-light.PNG" alt="Explore Courses" width="600">
+
+#### Course Details
+<img src="docs/screenshots/course-details-page.PNG" alt="Course Details" width="600">
+
+#### Course Details - Additional View
+<img src="docs/screenshots/course-details-page2.PNG" alt="Course Details 2" width="600">
+
+
+### Student
+
+#### Student Dashboard - Light
+<img src="docs/screenshots/student-dashboard-light.PNG" alt="Student Dashboard Light" width="600">
+
+#### Student Dashboard - Dark
+<img src="docs/screenshots/student-dashboard-dark.PNG" alt="Student Dashboard Dark" width="600">
+
+#### Enrolled Course
+<img src="docs/screenshots/student-enrolled-course-page.PNG" alt="Student Enrolled Course" width="600">
+
+#### Learning Page
+<img src="docs/screenshots/student-learning-page.PNG" alt="Student Learning Page" width="600">
+
+#### Account Settings
+<img src="docs/screenshots/account-settings.PNG" alt="Account Settings" width="600">
+
+#### Account Settings - Additional View
+<img src="docs/screenshots/account-settings2.PNG" alt="Account Settings 2" width="600">
+
+#### Account Settings - Light
+<img src="docs/screenshots/account-settings3-light.png" alt="Account Settings Light" width="600">
+
+
+### Instructor
+
+#### Manage Courses - Light
+<img src="docs/screenshots/instructor-manage-courses-page-light.PNG" alt="Instructor Manage Courses Light" width="600">
+
+#### Manage Courses - Dark
+<img src="docs/screenshots/instructor-manage-courses-page-dark.PNG" alt="Instructor Manage Courses Dark" width="600">
+
+#### Quiz Grading
+<img src="docs/screenshots/instructor-quiz-grading-page.PNG" alt="Instructor Quiz Grading" width="600">
+
+#### Update Course
+<img src="docs/screenshots/update-course-page.png" alt="Update Course" width="600">
+
+
+### Admin
+
+#### Admin Dashboard - Light
+<img src="docs/screenshots/admin-dashboard-light.PNG" alt="Admin Dashboard Light" width="600">
+
+#### Admin Dashboard - Dark
+<img src="docs/screenshots/admin-dashboard-dark.PNG" alt="Admin Dashboard Dark" width="600">
+
+#### Admin Dashboard 2 - Light
+<img src="docs/screenshots/admin-dashboard2-light.png" alt="Admin Dashboard 2 Light" width="600">
+
+#### Admin Dashboard 2 - Dark
+<img src="docs/screenshots/admin-dashboard2-dark.PNG" alt="Admin Dashboard 2 Dark" width="600">
+
+#### Manage Courses
+<img src="docs/screenshots/admin-manage-courses-page.PNG" alt="Admin Manage Courses" width="600">
+
+#### Manage Users
+<img src="docs/screenshots/admin-manage-users-page.PNG" alt="Admin Manage Users" width="600">
+
+
+### Course & Assessment Management
+
+#### Create Assignment
+<img src="docs/screenshots/create-assignment-page.png" alt="Create Assignment" width="600">
+
+#### Assignment Demonstration
+<img src="docs/screenshots/assignment-demo-page.PNG" alt="Assignment Demo" width="600">
+
+#### Create Quiz
+<img src="docs/screenshots/create-quiz-page.PNG" alt="Create Quiz" width="600">
+
+#### Quiz Demonstration
+<img src="docs/screenshots/quiz-demo-page.png" alt="Quiz Demo" width="600">
+
+#### Quiz Demonstration - Additional View
+<img src="docs/screenshots/quiz-demonstration-page.PNG" alt="Quiz Demonstration" width="600">
+
+#### Course Update
+<img src="docs/screenshots/course-update-page.PNG" alt="Course Update" width="600">
+
+
+### Footer
+
+<img src="docs/screenshots/footer-light.PNG" alt="Footer" width="600">
+
+
+## Responsive Design
+
+The application is fully responsive and optimized for desktop, tablet, and mobile devices.
+
+### Mobile Landing Page
+
+<img src="docs/screenshots/landing-page-mobile.jpg" alt="Landing Page Mobile" width="300">
+
+<img src="docs/screenshots/landing-page2-mobile.jpg" alt="Landing Page Mobile 2" width="300">
+
+<img src="docs/screenshots/landing-page3-mobile.jpg" alt="Landing Page Mobile 3" width="300">
+
+
+### Mobile Course Discovery
+
+<img src="docs/screenshots/explore-page-mobile.jpg" alt="Explore Courses Mobile" width="300">
+
+
+### Mobile Course Details
+
+<img src="docs/screenshots/course-details-page-mobile.jpg" alt="Course Details Mobile" width="300">
+
+<img src="docs/screenshots/course-details-page2-mobile.jpg" alt="Course Details Mobile 2" width="300">
+
+
+### Mobile Student
+
+<img src="docs/screenshots/student-dashboard-mobile.jpg" alt="Student Dashboard Mobile" width="300">
+
+<img src="docs/screenshots/student-dashboard2-mobile.jpg" alt="Student Dashboard Mobile 2" width="300">
+
+<img src="docs/screenshots/student-enrolled-course-page-mobile.jpg" alt="Student Enrolled Course Mobile" width="300">
+
+<img src="docs/screenshots/student-enrolled-course-page2-mobile.jpg" alt="Student Enrolled Course Mobile 2" width="300">
+
+
+### Mobile Instructor
+
+<img src="docs/screenshots/instructor-manage-courses-page-mobile.jpg" alt="Instructor Manage Courses Mobile" width="300">
+
+<img src="docs/screenshots/instructor-update-course-page-mobile.jpg" alt="Instructor Update Course Mobile" width="300">
+
+
+### Mobile Admin
+
+<img src="docs/screenshots/admin-dashboard-mobile.jpg" alt="Admin Dashboard Mobile" width="300">
+
+<img src="docs/screenshots/admin-dashboard2-mobile.jpg" alt="Admin Dashboard 2 Mobile" width="300">
+
+
+### Mobile Footer
+
+<img src="docs/screenshots/footer-mobile.jpg" alt="Footer Mobile" width="300">
+
+## ⚙️ Getting Started
+
+**You need:** .NET SDK 9 and a PostgreSQL database.
+
+```bash
+git clone https://github.com/Hashim017/lumen-lms.git
+cd lumen-lms
 ```
-   git clone https://github.com/Hashim017/lumen-lms.git
-   cd lumen-lms
+
+Open `appsettings.Development.json` in the project root and set your database link:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "your-postgres-connection-string"
+  }
+}
 ```
 
-3. Set your secrets.
+Run the app:
 
-```
-   dotnet user-secrets init
-   dotnet user-secrets set "ConnectionStrings:DefaultConnection" "YOUR_POSTGRES_CONNECTION_STRING"
-   dotnet user-secrets set "SeedDemoData" "true"
-```
-
-4. Run the app.
-
-```
-   dotnet run
+```bash
+dotnet restore
+dotnet run
 ```
 
-The app applies the migrations on the first start. With `SeedDemoData` set to `true`, it also adds 25 courses, 4 instructors, 11 students, quizzes, assignments, progress and grades.
-
-## Demo accounts
+## 🔑 Demo Accounts
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | admin@lms.com | Admin@123 |
-| Instructor | instructor@lms.com | Instructor@123 |
-| Student | student@lms.com | Student@123 |
+| Admin | `admin@lms.com` | `Admin@123` |
+| Instructor | `instructor@lms.com` | `Instructor@123` |
+| Student | `student@lms.com` | `Student@123` |
 
-More demo users exist, such as `ayesha@lms.com` as an instructor and `usman@lms.com` as a student. Their passwords follow the same pattern as the table.
+## 👤 Author
 
-New sign ups get the Student role. An admin can change roles on the Users page.
-
-## Project structure
-
-```
-Controllers/   Account, Admin, Assignments, Courses, Enrollments, Learn, Lessons, Quizzes
-Data/          DbContext, seeder, demo content and claims factory
-Models/        Entities and view models
-Views/         Razor views and shared partials
-wwwroot/       CSS and JavaScript
-Migrations/    EF Core migrations
-```
-
-## Deploy
-
-The app ships with a Dockerfile. On Render, set these environment variables:
-
-- `ConnectionStrings__DefaultConnection` with your PostgreSQL connection string
-- `SeedDemoData` with `true` or `false`
-
-The health check path is `/healthz`.
-
-## Author
-
-Built by Muhammad Hashim.
+**Muhammad Hashim** - [GitHub](https://github.com/Hashim017)
