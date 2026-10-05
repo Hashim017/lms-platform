@@ -1592,3 +1592,22 @@ html, body {
             margin-top: 0.5rem;
         }
 }
+
+/* Theme button: center the icon */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    font-size: 1.15rem;
+    text-align: center;
+}
+
+    .btn-icon i,
+    .btn-icon svg,
+    .btn-icon span {
+        display: block;
+        line-height: 1;
+        margin: 0;
+    }
