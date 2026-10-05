@@ -1567,3 +1567,28 @@ html, body {
 .btn-icon:not(:hover):not(:active) svg {
     transform: none;
 }
+
+/* Mobile navbar fix, v3 */
+@media (max-width: 991.98px) {
+    .nav-glass .navbar-collapse {
+        max-height: none;
+        overflow: visible;
+    }
+
+        .nav-glass .navbar-collapse .d-flex {
+            flex-wrap: wrap;
+        }
+
+        .nav-glass .navbar-collapse .dropdown {
+            display: contents;
+        }
+
+        .nav-glass .navbar-collapse .dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            inset: auto !important;
+            flex: 0 0 100%;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+}
