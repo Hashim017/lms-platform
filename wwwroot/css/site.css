@@ -1540,3 +1540,30 @@ html, body {
             margin-top: 0.5rem;
         }
 }
+/* Theme button: no stuck tilt on touch */
+.btn-icon,
+.btn-icon i,
+.btn-icon svg {
+    transition: transform 0.2s ease;
+}
+
+@media (hover: none) {
+    .btn-icon:hover,
+    .btn-icon:hover i,
+    .btn-icon:hover svg {
+        transform: none !important;
+    }
+}
+
+.btn-icon:focus,
+.btn-icon:focus-visible,
+.btn-icon:active {
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-icon:not(:hover):not(:active),
+.btn-icon:not(:hover):not(:active) i,
+.btn-icon:not(:hover):not(:active) svg {
+    transform: none;
+}
