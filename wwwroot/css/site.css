@@ -1514,3 +1514,25 @@ hr {
 .glass.danger-zone {
     border-color: var(--accent);
 }
+
+/* Mobile navbar fix */
+html, body {
+    overflow-x: hidden;
+}
+
+@media (max-width: 991.98px) {
+    .navbar .navbar-collapse {
+        max-height: calc(100vh - 90px);
+        overflow-y: auto;
+    }
+
+    .navbar .dropdown-menu {
+        position: static !important;
+        transform: none !important;
+        inset: auto !important;
+        width: 100%;
+        margin-top: 0.5rem;
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+}
