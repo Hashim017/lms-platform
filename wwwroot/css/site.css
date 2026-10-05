@@ -1521,18 +1521,22 @@ html, body {
 }
 
 @media (max-width: 991.98px) {
-    .navbar .navbar-collapse {
+    .nav-glass .navbar-collapse {
+        position: relative;
         max-height: calc(100vh - 90px);
         overflow-y: auto;
     }
 
-    .navbar .dropdown-menu {
-        position: static !important;
-        transform: none !important;
-        inset: auto !important;
-        width: 100%;
-        margin-top: 0.5rem;
-        box-shadow: none;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-    }
+        .nav-glass .navbar-collapse .dropdown {
+            position: static;
+        }
+
+        .nav-glass .navbar-collapse .dropdown-menu {
+            position: absolute !important;
+            inset: auto 0 auto 0 !important;
+            transform: none !important;
+            width: auto;
+            min-width: 0;
+            margin-top: 0.5rem;
+        }
 }
